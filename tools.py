@@ -41,3 +41,14 @@ def overlay_frame(frame1, frame2, x, y):
     frame2[y:y + h1, x:x + w1] = frame1
 
     return frame2
+
+
+def bgr_to_gray(frame):
+    # Tách các kênh màu BGR
+    blue, green, red = frame[:, :, 0], frame[:, :, 1], frame[:, :, 2]
+
+    # Áp dụng công thức chuyển đổi sang grayscale
+    gray_frame = 0.299 * red + 0.587 * green + 0.114 * blue
+
+    # Chuyển đổi lại thành kiểu dữ liệu uint8 để phù hợp với hình ảnh
+    return gray_frame.astype(np.uint8)

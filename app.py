@@ -4,6 +4,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tools import apply_custom_threshold_filter
 from tools import overlay_frame
+from tools import bgr_to_gray
 
 # 1. Load các model đã huấn luyện
 emotion_model = load_model('emotion_detection_model.h5')
@@ -42,7 +43,7 @@ while True:
     frame = cv2.flip(frame, 1)  # Phản chiếu khung hình theo chiều ngang
 
     # Chuyển ảnh sang màu xám
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray_frame = bgr_to_gray(frame)
 
     filtered_frame = gray_frame.copy()
 
@@ -77,7 +78,9 @@ while True:
 
             # 5. Dự đoán tuổi và giới tính
             age_pred, gender_pred = age_gender_model.predict(age_gender_input, verbose=0)
-            age_text = str(int(age_pred[0][0] * 0.85))  # Chuyển dự đoán tuổi về dạng chuỗi
+            float_age = age_pred[0][0]
+            float_age = float_age * 0.8 if float_age < 40 else float_age
+            age_text = str(int(float_age))  # Chuyển dự đoán tuổi về dạng chuỗi
             gender_text = "Male" if gender_pred[0][0] < 0.5 else "Female"
 
             # 6. Hiển thị cảm xúc, tuổi và giới tính lên màn hình
